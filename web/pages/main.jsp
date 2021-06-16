@@ -74,7 +74,7 @@
                 let indexOfLi = $(this).index();
                 switch (indexOfLi){
                     case 0://恋练不忘
-                        $("#content_body").attr("src",webSrc+"LianLianBuWangPage.html");
+                        $("#content_body").attr("src","word?action=listAllOtherWord&curPage=1&pageSize=10");
                         $(this).addClass("li_selected");
                         $(this).siblings().removeClass("li_selected");
                         break;

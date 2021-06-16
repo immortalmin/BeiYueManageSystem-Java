@@ -1,23 +1,27 @@
 package com.immortalmin.pojo.word;
 
+import com.immortalmin.dao.WordDao;
+import com.immortalmin.dao.impl.WordDaoImpl;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class KelinsiItem {
-    private String iid;//id
+    private int iid;//id
     private String number;//item序号
     private String label;//标签
     private String word_ch;//单词的中文释义
     private String explanation;//单词的英文释义
     private String gram;//语法
     private String wid;//对应的单词id
-    private ArrayList<String> en_tips = null;
-    private ArrayList<KelinsiSentence> sentences = null;//例句
+    private List<String> en_tips = null;
+    private List<KelinsiSentence> sentences = null;//例句
 
-    public String getIid() {
+    public int getIid() {
         return iid;
     }
 
-    public void setIid(String iid) {
+    public void setIid(int iid) {
         this.iid = iid;
     }
 
@@ -69,19 +73,21 @@ public class KelinsiItem {
         this.wid = wid;
     }
 
-    public ArrayList<String> getEn_tips() {
+    public List<String> getEn_tips() {
         return en_tips;
     }
 
-    public void setEn_tips(ArrayList<String> en_tips) {
+    public void setEn_tips(List<String> en_tips) {
         this.en_tips = en_tips;
     }
 
-    public ArrayList<KelinsiSentence> getSentences() {
+    public List<KelinsiSentence> getSentences() {
+        WordDao wordDao = new WordDaoImpl();
+        this.sentences = wordDao.getKelinsiSentencesByIid(this.iid);
         return sentences;
     }
 
-    public void setSentences(ArrayList<KelinsiSentence> sentences) {
+    public void setSentences(List<KelinsiSentence> sentences) {
         this.sentences = sentences;
     }
 
@@ -92,7 +98,7 @@ public class KelinsiItem {
                 ", number='" + number + '\'' +
                 ", label='" + label + '\'' +
                 ", word_ch='" + word_ch + '\'' +
-                ", explanation='" + explanation + '\'' +
+                ", explanation='" + getSentences().toString() + '\'' +
                 ", gram='" + gram + '\'' +
                 ", wid='" + wid + '\'' +
                 ", en_tips=" + en_tips +

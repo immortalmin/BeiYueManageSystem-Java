@@ -37,4 +37,13 @@
         <servlet-name>FeedbackServlet</servlet-name>
         <url-pattern>/feedback</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>WordServlet</servlet-name>
+        <servlet-class>com.immortalmin.web.WordServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WordServlet</servlet-name>
+        <url-pattern>/word</url-pattern>
+    </servlet-mapping>
 </web-app>

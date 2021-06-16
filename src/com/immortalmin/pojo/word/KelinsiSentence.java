@@ -1,6 +1,6 @@
 package com.immortalmin.pojo.word;
 
-public class KelinsiSentence {
+public class KelinsiSentence extends ExampleSentence{
     private String sid;//例句id
     private String iid;//对应item的id
 
@@ -25,6 +25,8 @@ public class KelinsiSentence {
         return "KelinsiSentence{" +
                 "sid='" + sid + '\'' +
                 ", iid='" + iid + '\'' +
+                ", sentence_en='" + getSentence_en() + '\'' +
+                ", sentence_ch='" + getSentence_ch() + '\'' +
                 '}';
     }
 }

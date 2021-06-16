@@ -1,25 +1,35 @@
 package com.immortalmin.dao;
 
-import com.immortalmin.pojo.word.Word;
+import com.immortalmin.pojo.word.*;
 
 import java.util.List;
 
 public interface WordDao {
 
     /**
-     * 获取单词列表
+     * 获取其他单词列表
      * @param curPage
      * @param pageSize
-     * @param dict_source 0:其他单词  1:柯林斯
      * @return
      */
-    List<Word> getWordList(int curPage,int pageSize,int dict_source);
+    List<OtherWord> getOtherWordList(int curPage, int pageSize);
 
     /**
-     * 获取单词的详细信息
-     * @param wid
-     * @param dict_source
+     * 获取柯林斯单词列表
+     * @param curPage
+     * @param pageSize
      * @return
      */
-    Word getWordByIdAndSource(int wid,int dict_source);
+    List<KelinsiWord> getKelinsiWordList(int curPage, int pageSize);
+
+    /**
+     * 获取其他例句的详细信息
+     * @param wid
+     * @return
+     */
+    OtherSentence getOtherSentenceByWid(int wid);
+
+    List<KelinsiSentence> getKelinsiSentencesByIid(int iid);
+
+    List<KelinsiItem> getKelinsiItemsByWid(int wid);
 }

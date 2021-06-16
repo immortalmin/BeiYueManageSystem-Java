@@ -1,6 +1,6 @@
 package com.immortalmin.pojo.word;
 
-public class OtherSentence {
+public class OtherSentence extends ExampleSentence{
     private String eid;//例句id
     private String wid;//对应单词的id
     private String kid;//对应柯林斯词典中单词的id
@@ -47,10 +47,11 @@ public class OtherSentence {
         this.source = source;
     }
 
-    @Override
     public String toString() {
         return "OtherSentence{" +
                 "eid='" + eid + '\'' +
+                ", sentence_en='" + getSentence_en() + '\'' +
+                ", sentence_ch='" + getSentence_ch() + '\'' +
                 ", wid='" + wid + '\'' +
                 ", kid='" + kid + '\'' +
                 ", word_meaning='" + word_meaning + '\'' +
