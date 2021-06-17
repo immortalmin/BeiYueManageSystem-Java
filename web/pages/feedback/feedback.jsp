@@ -31,7 +31,7 @@
 
         function dataInit() {
             let data_i=0;
-            $("#totalCountP").text(${requestScope.totalCount});
+            <!--$("#totalCountP").text(${requestScope.totalCount});-->
             <c:forEach items = "${requestScope.feedbackList}" var="feedback">
             data[data_i] = [];
             data[data_i][0]  = "${feedback.user.username}";

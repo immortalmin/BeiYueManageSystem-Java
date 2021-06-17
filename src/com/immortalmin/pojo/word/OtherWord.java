@@ -1,8 +1,11 @@
 package com.immortalmin.pojo.word;
 
+import com.immortalmin.dao.UserDao;
+import com.immortalmin.dao.impl.UserDaoImpl;
+
 public class OtherWord extends Word{
     private String word_ch;
-    private int source;
+    private String source;
 
     public String getWord_ch() {
         return word_ch;
@@ -12,11 +15,12 @@ public class OtherWord extends Word{
         this.word_ch = word_ch;
     }
 
-    public int getSource() {
-        return source;
+    public String getSource() {
+        UserDao userDao = new UserDaoImpl();
+        return userDao.queryUserByUid(Integer.parseInt(source)).getUsername();
     }
 
-    public void setSource(int source) {
+    public void setSource(String source) {
         this.source = source;
     }
 

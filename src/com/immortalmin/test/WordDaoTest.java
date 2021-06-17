@@ -30,7 +30,7 @@ public class WordDaoTest {
 
     @Test
     public void getOtherSentenceByWid() {
-        OtherSentence otherSentence = wordDao.getOtherSentenceByWid(10);
+        List<OtherSentence> otherSentence = wordDao.getOtherSentenceByWid(10);
         System.out.println(otherSentence.toString());
     }
 
@@ -44,5 +44,23 @@ public class WordDaoTest {
     public void getKelinsiItemsByWid(){
         List<KelinsiItem> res = wordDao.getKelinsiItemsByWid(100);
         System.out.println(res);
+    }
+
+    @Test
+    public void getTotalCount(){
+        int res = wordDao.getTotalCount(1);
+        System.out.println(res);
+    }
+
+    @Test
+    public void getOtherWordByWid(){
+        OtherWord otherWord = wordDao.getOtherWordByWid(100);
+        System.out.println(otherWord.toString());
+    }
+
+    @Test
+    public void getKelinsiWordByWid(){
+        KelinsiWord kelinsiWord = wordDao.getKelinsiWordByWid(100);
+        System.out.println(kelinsiWord.toString());
     }
 }

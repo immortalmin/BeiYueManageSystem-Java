@@ -36,7 +36,9 @@ public class KelinsiWord extends Word{
     @Override
     public String toString() {
         return "KelinsiWord{" +
-                "word_ch='" + word_ch + '\'' +
+                "wid='" + getWid() + '\'' +
+                ",word_en='" + getWord_en() + '\'' +
+                ",word_ch='" + word_ch + '\'' +
                 ", star='" + star + '\'' +
                 '}';
     }

@@ -21,62 +21,39 @@
     <script type="text/javascript" src="static/js/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" language="JavaScript">
         let webSrc = "http://www.immortalmin.com/html/cgi-bin/BeiYueManagementSystem/";
-        let curPage = 1,pageCount;
+        let curPage = ${requestScope.curPage},pageCount=10,pageSize = ${requestScope.pageSize},totalCount = ${requestScope.totalCount};
         $(document).ready(function(){
-            // QueryTotalCount();
-            // getAllWords();
-            $("#importWordBtn").on("click",function (){
-                window.location.href="./ImportWord.html?dict_source=0";
-            })
-            // $('#delete_model').on('show.bs.modal',function (event){
-            //     let button = $(event.relatedTarget)
-            //     let fid = button.data('fid');
-            //     let type = button.data('type');
-            //     let modal = $(this)
-            //     modal.attr("fid",fid);
-            //     modal.attr("type",type);
-            // })
-            // $('#del_confirm_btn').on('click',function (){
-            //     let fid = $(this).parent().parent().parent().parent().attr('fid');
-            //     let type = $(this).parent().parent().parent().parent().attr('type');
-            //     DeleteFeedback(fid,type);
-            // })
+            setPage();
+            bindClick();
+            modelInit();
         });
-        function getAllWords(){
-            $.ajax({
-                url:"../C++/WordManage.cgi",
-                type:"POST",
-                data:{
-                    "what":0,
-                    "curPage":curPage,
-                    "pageSize":$("#pageSizeSel").val(),
-                    "dict_source":0
-                },
-                dataType:"json",
-                success:function (data){
-                    //清除之前残留的数据
-                    $("#data_table tr").not("tr:first").remove();
-                    for(let i=0;i<data.length;i++){
-                        let del_btn = "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\".bs-example-modal-sm\" data-fid=\"\">删除</button>"
-                        $("#data_table").append("<tr><td>"+data[i]["word_group"]+"</td>" +
-                            "<td>"+data[i]["C_meaning"]+"</td>" +
-                            "<td><button>详情</button>"+del_btn+"</td></tr>")
-                    }
-                    $("#data_table tr td").children("button").click(function (){
-                        switch ($(this).index()){
-                            case 0:
-                                let num = $(this).parent().parent().index()-1;
-                                window.location.href='./WordDetailPage.html?wid='+data[num]["wid"];
-                                break;
-                            case 1://删除功能  还没做
 
-                                break;
-                        }
+        function modelInit() {
+            $('#delete_model').on('show.bs.modal',function (event){
+                let button = $(event.relatedTarget)
+                let wid = button.data('wid');
+                let modal = $(this)
+                modal.attr("wid",wid);
+            })
+            $('#del_confirm_btn').on('click',function (){
+                let wid = $(this).parent().parent().parent().parent().attr('wid');
+                DeleteWord(wid);
+            })
+        }
 
-                    });
-                }
+        function DeleteWord(wid) {
+            $.post("word?action=delete",{'wid':wid,'dict_source':0},function () {
+                window.location.reload();
             });
         }
+
+        function bindClick(){
+            $("#importWordBtn").on("click",function (){
+                // window.location.href=webSrc+"HTML/ImportWord.html?dict_source=0";
+                window.location.href="pages/word/ImportWord.html";
+            })
+        }
+
         //当前页码的改变
         let pageChangeV = function (){
             let children = $(this).siblings();
@@ -94,101 +71,63 @@
                 curPage=$(this).text();
                 $(this).addClass("active");
             }
-            getAllWords();
-            QueryTotalCount();
+            window.location.href="word?action=listAllOtherWord&curPage="+curPage+"&pageSize="+pageSize;
         }
         let pageSizeChangeV = function (){
             curPage=1;
-            QueryTotalCount();
-            getAllWords();
+            pageSize = $("#pageSizeSel").val();
+            window.location.href="word?action=listAllOtherWord&curPage="+curPage+"&pageSize="+pageSize;
         }
 
-        function QueryTotalCount(){
-            $.ajax({
-                url:"../C++/WordManage.cgi",
-                type:"GET",
-                data:{
-                    "what":1,
-                    "dict_source":0
-                },
-                dataType:"text",
-                success:function (data){
-                    let totalCount = data;
-                    $("#totalCountP").text("共 "+totalCount+" 条记录");
-                    let pageSize = $("#pageSizeSel").val();
-                    pageCount = Math.ceil(totalCount/pageSize);
-                    while(true){
-                        if($("#page_nav ul li").length<=4) break;
-                        $("#page_nav ul li").eq(2).remove();
-                    }
-                    for(let i=Math.min(Number(curPage)+2,pageCount);i>=Math.max(Number(curPage)-2,1);i--){
-                        $("#page_nav ul li").eq(1).after("<li><a href=\"#\">"+i+"</a></li>");
-                        if(i===Number(curPage)) $("#page_nav ul li").eq(2).addClass("active");
-                    }
-                    //解绑之前绑定的点击事件
-                    $("#page_nav ul li").prop("onclick",null).off("click");
-                    //为页码标签绑定点击事件
-                    $("#page_nav ul li").on("click",pageChangeV);
+        function setPage(){
+            $("#totalCountP").text("共 "+totalCount+" 条记录");
+            $("#pageSizeSel").find("option[value="+pageSize+"]").attr("selected",true);
+            pageCount = Math.ceil(totalCount/pageSize);
+            while(true){
+                if($("#page_nav ul li").length<=4) break;
+                $("#page_nav ul li").eq(2).remove();
+            }
+            for(let i=Math.min(Number(curPage)+2,pageCount);i>=Math.max(Number(curPage)-2,1);i--){
+                // $("#page_nav ul li").eq(1).after("<li><a href=\"feedback?action=list&curPage="+i+"&pageSize="+pageSize+"\">"+i+"</a></li>");
+                $("#page_nav ul li").eq(1).after("<li><a href='#' onclick=\"return false;\">"+i+"</a></li>");
+                if(i===Number(curPage)) $("#page_nav ul li").eq(2).addClass("active");
+            }
+            //解绑之前绑定的点击事件
+            $("#page_nav ul li").prop("onclick",null).off("click");
+            //为页码标签绑定点击事件
+            $("#page_nav ul li").on("click",pageChangeV);
 
-                    //清除所有按钮的disabled
-                    $("#page_nav ul li").removeClass("disabled");
-                    //设置按钮不可点击
-                    if(Number(curPage)===1){
-                        $("#page_nav ul li").eq(0).addClass("disabled");
-                        $("#page_nav ul li").eq(1).addClass("disabled");
-                    }
-                    if(Number(curPage)===Number(pageCount)){
-                        $("#page_nav ul li").eq(-1).addClass("disabled");
-                        $("#page_nav ul li").eq(-2).addClass("disabled");
-                    }
-                }
-            })
-        }
-
-
-        function UpdateFeedback(fid,type,progress){
-            // $(this).parent().parent().parent().parent().siblings(5).text(progress);
-            $.ajax({
-                url:"../C++/FeedbackManage.cgi?what=1&fid="+fid+"&type="+type+"&progress="+progress,
-                type:"GET",
-                dataType:"text",
-                success:function (){
-                    //刷新当前页面，最好是数据发生变化，但是页面位置不要发生改变
-                    window.location.reload();
-                }
-            });
-        }
-        function DeleteFeedback(fid,type){
-            $.ajax({
-                url:"../C++/FeedbackManage.cgi?what=2&fid="+fid+"&type="+type,
-                type:"GET",
-                dataType:"text",
-                success:function (data){
-                    //刷新当前页面，最好是数据发生变化，但是页面位置不要发生改变
-                    console.log(data);
-                    window.location.reload();
-                }
-            });
+            //清除所有按钮的disabled
+            $("#page_nav ul li").removeClass("disabled");
+            //设置按钮不可点击
+            if(Number(curPage)===1){
+                $("#page_nav ul li").eq(0).addClass("disabled");
+                $("#page_nav ul li").eq(1).addClass("disabled");
+            }
+            if(Number(curPage)===Number(pageCount)){
+                $("#page_nav ul li").eq(-1).addClass("disabled");
+                $("#page_nav ul li").eq(-2).addClass("disabled");
+            }
         }
 
     </script>
 </head>
 <body>
 
-<p id="totalCountP">共10条记录</p>
+<p id="totalCountP">共${requestScope.totalCount}条记录</p>
 <button id="importWordBtn"><span class="glyphicon glyphicon-open" aria-hidden="true">导入单词</span></button>
 <!--    页码-->
 <nav aria-label="Page navigation" id="page_nav">
     <ul class="pagination" style="margin: 5px">
         <li class="disabled">
-            <a href="#" aria-label="Previous">
+            <a href="#" aria-label="Previous" onclick="return false;">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
-        <li class="disabled"><a href="#">首页</a></li>
-        <li><a href="#">末页</a></li>
+        <li class="disabled"><a href="#" onclick="return false;">首页</a></li>
+        <li><a href="#" onclick="return false;">末页</a></li>
         <li>
-            <a href="#" aria-label="Next">
+            <a href="#" aria-label="Next" onclick="return false;">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
@@ -214,8 +153,8 @@
             <td>${word.word_en}</td>
             <td>${word.word_ch}</td>
             <td>
-                <button>详情</button>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm" data-fid="">删除</button>
+                <button onclick="window.location.href='word?action=listOtherWordDetail&wid=${word.wid}'">详情</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm" data-wid="${word.wid}">删除</button>
             </td>
         </tr>
     </c:forEach>

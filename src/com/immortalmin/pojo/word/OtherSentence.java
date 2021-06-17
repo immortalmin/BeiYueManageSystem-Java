@@ -1,5 +1,8 @@
 package com.immortalmin.pojo.word;
 
+import com.immortalmin.dao.UserDao;
+import com.immortalmin.dao.impl.UserDaoImpl;
+
 public class OtherSentence extends ExampleSentence{
     private String eid;//例句id
     private String wid;//对应单词的id
@@ -40,7 +43,8 @@ public class OtherSentence extends ExampleSentence{
     }
 
     public String getSource() {
-        return source;
+        UserDao userDao = new UserDaoImpl();
+        return userDao.queryUserByUid(Integer.parseInt(source)).getUsername();
     }
 
     public void setSource(String source) {
