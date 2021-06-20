@@ -2,21 +2,30 @@ package com.immortalmin.web;
 
 import com.immortalmin.dao.WordDao;
 import com.immortalmin.dao.impl.WordDaoImpl;
+import com.immortalmin.pojo.User;
 import com.immortalmin.pojo.word.OtherSentence;
 import com.immortalmin.pojo.word.OtherWord;
+import com.immortalmin.service.WordService;
+import com.immortalmin.service.impl.WordServiceImpl;
+import com.immortalmin.utils.ImportWordUtils;
+import com.immortalmin.utils.StringUtils;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class WordServlet extends BaseServlet {
-    WordDao wordDao = new WordDaoImpl();
+    private WordDao wordDao = new WordDaoImpl();
+    private WordService wordService = new WordServiceImpl();
+    private List<OtherWord> wordList = null;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
@@ -47,14 +56,66 @@ public class WordServlet extends BaseServlet {
         String wid = request.getParameter("wid");
         wordDao.deleteWordByWid(Integer.valueOf(wid));
     }
-
+    
     protected void importWords(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("utf-8");
-        InputStream inputStream = request.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String s;
-        while ((s = reader.readLine()) != null) {
-            System.out.println("res:"+s);
+        DiskFileItemFactory fileItemFactory = new DiskFileItemFactory();
+        ServletFileUpload servletFileUpload = new ServletFileUpload(fileItemFactory);
+        servletFileUpload.setHeaderEncoding("utf-8");
+        List<FileItem> items = new ArrayList<FileItem>();
+        try{
+            items = servletFileUpload.parseRequest(request);
+        }catch (FileUploadException e){
+            e.printStackTrace();
+        }
+        for (FileItem item:items){
+            handleFileField(item);
+        }
+        //开始导入单词数据
+        int uid = ((User)request.getSession().getAttribute("user")).getUid();
+        wordList = wordService.analysisWordString(this.getServletContext(),uid);
+        request.setAttribute("wordList",wordList);
+        request.getRequestDispatcher("pages/word/ImportWordPreview.jsp").forward(request,response);
+    }
+
+    protected void confirmImport(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        wordService.importWord(wordList);
+        request.setAttribute("importResult",1);
+        request.setAttribute("wordList",wordList);
+        request.getRequestDispatcher("pages/word/ImportWordPreview.jsp").forward(request,response);
+    }
+
+    private void handleFormField(FileItem item) {
+        String fieldName = item.getFieldName();
+
+        // 获取 普通数据项中的 value值
+        String value = "";
+        try {
+            value = item.getString("utf-8");  // 以 utf-8的编码格式来解析 value值
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        // 输出到控制台
+        System.out.println("fieldName:" + fieldName + "--value:" + value);
+    }
+
+    /**
+     * 处理 文件数据项
+     * @param item
+     */
+    private void handleFileField(FileItem item) {
+        // 获取 当前项目下的 /files 目录的绝对位置
+        String path = this.getServletContext().getRealPath("/files");
+        File file = new File(path);
+
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        try {
+            item.write(new File(file.toString(), "importFile.txt"));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

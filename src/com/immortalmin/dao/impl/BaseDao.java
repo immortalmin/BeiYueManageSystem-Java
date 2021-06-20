@@ -61,4 +61,19 @@ public abstract class BaseDao {
         return null;
     }
 
+    /**
+     * 获取刚插入的id
+     */
+    public int getInsertId(){
+        Connection connection = JdbcUtils.getConnection();
+        try {
+            return Integer.parseInt(queryRunner.query(connection,"select @@identity",new ScalarHandler()).toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtils.close(connection);
+        }
+        return -1;
+    }
+
 }

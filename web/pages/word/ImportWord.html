@@ -13,51 +13,13 @@
     <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
     <script type="text/javascript" src="static/js/jquery-3.5.1.min.js"></script>
-
-    <script type="text/javascript" language="JavaScript">
-        $(document).ready(function (){
-            $("#warningCloseBtn").on("click",function (){
-                $("#successAlert").hide();
-            })
-
-        })
-        let showAlert = function(){
-            $("#successAlert").show();
-        }
-        let hideAlert = function(){
-            $("#successAlert").hide();
-        }
-        function uploadWord(){
-            let formData = new FormData(document.getElementById("uploadForm"));
-            $.ajax({
-                type:"post",
-                // url:"../C++/ImportWord.cgi?uid=1",
-                url:"word?action=importWords",
-                data:formData,
-                processData:false,
-                contentType:false,
-                success:function (data){
-                    console.log(data);
-                    $("#successAlert").show();
-                },
-                error:function (data){
-                    console.log("上传失败");
-                }
-            })
-        }
-
-    </script>
 </head>
 <body>
-    <div class="alert alert-success alert-dismissible" role="alert" id="successAlert" style="display: none;">
-        <button type="button" id="warningCloseBtn" class="close"><span aria-hidden="true">&times;</span></button>
-        <strong>Success!</strong> 导入成功！
-    </div>
     <form enctype="multipart/form-data"
-          action="###"
-          method="post" id="uploadForm" onsubmit="return false">
-        <p>文件：<input type="file" name="wordFile" onclick="hideAlert()"/></p>
-        <p><input type="submit" value="上传" onclick="uploadWord()"/></p>
+          action="word?action=importWords"
+          method="post" id="uploadForm">
+        <p>文件：<input type="file" name="wordFile"/></p>
+        <p><input type="submit" value="确定"/></p>
     </form>
     <div id="instructionDiv">
         <h3>操作规范：</h3>
@@ -66,9 +28,9 @@
         <h4>&nbsp;&nbsp;每个单词占<b>两行</b>，分别是<b>英文单词</b>和<b>中文意思</b></h4>
         <h4>&nbsp;&nbsp;如果有例句，每个例句占<b>三行</b>。分别是<b>单词在例句中的解释</b>，<b>英文例句</b>，<b>中文翻译</b></h4>
         <img src="static/img/graphic1.png">
-        <h4>3.将文件编码设置为utf-8</h4>
-        <img src="static/img/graphic2.png">
-        <img src="static/img/graphic3.png">
+<!--        <h4>3.将文件编码设置为utf-8</h4>-->
+<!--        <img src="static/img/graphic2.png">-->
+<!--        <img src="static/img/graphic3.png">-->
         <h5></h5>
     </div>
 

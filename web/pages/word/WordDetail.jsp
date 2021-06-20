@@ -90,7 +90,7 @@
         <div id="word_div">
             <p>${requestScope.otherWord.word_en}</p>
             <p>${requestScope.otherWord.word_ch}</p>
-            <p>来源:${requestScope.otherWord.source}</p>
+            <p>来源:${requestScope.otherWord.source_username}</p>
         </div>
         <!--        例句-->
         <div id="examples_div">
@@ -98,7 +98,7 @@
             <c:forEach items="${requestScope.otherSentences}" var="otherSentence">
                 <div class="example_div">
                     <p>${otherSentence.word_meaning}</p>
-                    <p>来源:${otherSentence.source}</p>
+                    <p>来源:${otherSentence.source_username}</p>
                     <p>${otherSentence.sentence_en}</p>
                     <p>${otherSentence.sentence_ch}</p>
                 </div>

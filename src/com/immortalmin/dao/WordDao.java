@@ -47,4 +47,15 @@ public interface WordDao {
      * 删除单词
      */
     void deleteWordByWid(int wid);
+
+    /**
+     * 新增单词
+     * @param otherWord
+     */
+    int insertWord(OtherWord otherWord);
+
+    /**
+     * 新增例句
+     */
+    int insertOtherSentence(OtherSentence otherSentence);
 }

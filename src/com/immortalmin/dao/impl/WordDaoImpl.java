@@ -74,4 +74,19 @@ public class WordDaoImpl extends BaseDao implements WordDao {
         update(sql,wid);
     }
 
+    @Override
+    public int insertWord(OtherWord otherWord) {
+        String sql = "insert into words(word_group,C_meaning,source)values(?,?,?)";
+        update(sql,otherWord.getWord_en(),otherWord.getWord_ch(),otherWord.getSource());
+        return getInsertId();
+    }
+
+    @Override
+    public int insertOtherSentence(OtherSentence otherSentence) {
+        String sql = "insert into example(word_meaning,E_sentence,C_translate,wid,source)values(?,?,?,?,?);";
+        update(sql,otherSentence.getWord_meaning(),otherSentence.getSentence_en(),otherSentence.getSentence_ch(),otherSentence.getWid(),otherSentence.getSource());
+        return getInsertId();
+    }
+
+
 }
