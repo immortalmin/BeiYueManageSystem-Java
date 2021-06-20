@@ -38,7 +38,6 @@
 
                         break;
                     case 1:
-                        // $("#content_body").attr("src",webSrc+"FeedbackPage.html");
                         $("#content_body").attr("src","feedback?action=list&curPage=1&pageSize=10");
                         $(this).addClass("li_selected");
                         $(this).siblings().removeClass("li_selected");
@@ -55,7 +54,7 @@
                         }
                         break;
                     case 4:
-                        $("#content_body").attr("src",webSrc+"UserPage.html");
+                        $("#content_body").attr("src","user?action=list&curPage=1&pageSize=10");
                         $(this).addClass("li_selected");
                         $(this).siblings().removeClass("li_selected");
                         $("#wordSubMenu").css("display","none");
@@ -74,17 +73,17 @@
                 let indexOfLi = $(this).index();
                 switch (indexOfLi){
                     case 0://恋练不忘
-                        $("#content_body").attr("src","word?action=listAllOtherWord&curPage=1&pageSize=10");
+                        $("#content_body").attr("src","word?action=listAllWords&curPage=1&pageSize=10&dict_source=1");
                         $(this).addClass("li_selected");
                         $(this).siblings().removeClass("li_selected");
                         break;
                     case 1://柯林斯词典
-                        $("#content_body").attr("src",webSrc+"KeLinSiPage.html");
+                        $("#content_body").attr("src","word?action=listAllWords&curPage=1&pageSize=10&dict_source=2");
                         $(this).addClass("li_selected");
                         $(this).siblings().removeClass("li_selected");
                         break;
                     case 2://由用户添加的单词/词组
-                        $("#content_body").attr("src",webSrc+"NewWordPage.html");
+                        $("#content_body").attr("src","word?action=listAllWords&curPage=1&pageSize=10&dict_source=0");
                         $(this).addClass("li_selected");
                         $(this).siblings().removeClass("li_selected");
                         break;

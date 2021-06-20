@@ -24,9 +24,16 @@ public class WordDaoImpl extends BaseDao implements WordDao {
 
     @Override
     public List<OtherWord> getOtherWordList(int curPage, int pageSize) {
-        String sql = "select wid,word_group as \"word_en\",C_meaning as \"word_ch\",source from words limit "+(curPage-1)*pageSize+","+pageSize;
+        String sql = "select wid,word_group as \"word_en\",C_meaning as \"word_ch\",source from words where source!=1 limit "+(curPage-1)*pageSize+","+pageSize;
         return queryForList(OtherWord.class,sql);
     }
+
+    @Override
+    public List<OtherWord> getLianlianWordList(int curPage, int pageSize) {
+        String sql = "select wid,word_group as \"word_en\",C_meaning as \"word_ch\",source from words where source=1 limit "+(curPage-1)*pageSize+","+pageSize;
+        return queryForList(OtherWord.class,sql);
+    }
+
 
     @Override
     public List<KelinsiWord> getKelinsiWordList(int curPage, int pageSize) {
@@ -57,9 +64,12 @@ public class WordDaoImpl extends BaseDao implements WordDao {
         String sql;
         switch (dict_source){
             case 0:
-                sql = "SELECT COUNT(*) FROM words;";
+                sql = "SELECT COUNT(*) FROM words where source!=1;";
                 break;
             case 1:
+                sql = "SELECT COUNT(*) FROM words where source=1;";
+                break;
+            case 2:
                 sql = "SELECT COUNT(*) FROM k_words;";
                 break;
             default:
@@ -69,8 +79,16 @@ public class WordDaoImpl extends BaseDao implements WordDao {
     }
 
     @Override
-    public void deleteWordByWid(int wid) {
-        String sql="delete from words where wid=?";
+    public void deleteWordByWid(int wid,int dict_source) {
+        String sql;
+        switch (dict_source){
+            case 0: case 1: default:
+                sql="delete from words where wid=?";
+                break;
+            case 2:
+                sql="delete from k_words where wid=?";
+                break;
+        }
         update(sql,wid);
     }
 

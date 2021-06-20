@@ -2,8 +2,7 @@ package com.immortalmin.service.impl;
 
 import com.immortalmin.dao.WordDao;
 import com.immortalmin.dao.impl.WordDaoImpl;
-import com.immortalmin.pojo.word.OtherSentence;
-import com.immortalmin.pojo.word.OtherWord;
+import com.immortalmin.pojo.word.*;
 import com.immortalmin.service.WordService;
 import com.immortalmin.utils.StringUtils;
 
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WordServiceImpl implements WordService {
+
+    private WordDao wordDao = new WordDaoImpl();
 
     @Override
     public List<OtherWord> analysisWordString(ServletContext context, int uid){
@@ -83,4 +84,53 @@ public class WordServiceImpl implements WordService {
         }
 
     }
+
+    @Override
+    public <T> List<T> getWordList(Class<T> type,int curPage, int pageSize, int dict_source) {
+        List<T> res = new ArrayList<>();
+        switch (dict_source){
+            case 0://用户添加的单词
+                List<OtherWord> wordList = wordDao.getOtherWordList(curPage, pageSize);
+                for(OtherWord word:wordList) res.add((T) word);
+                break;
+            case 1://恋练有词
+                wordList = wordDao.getLianlianWordList(curPage, pageSize);
+                for(OtherWord word:wordList) res.add((T) word);
+                break;
+            case 2://柯林斯词典
+                List<KelinsiWord> wordList2 = wordDao.getKelinsiWordList(curPage, pageSize);
+                for(KelinsiWord word:wordList2) res.add((T) word);
+                break;
+        }
+        return res;
+    }
+
+    @Override
+    public <T> T getWordDetail(Class<T> type, int wid, int dict_source) {
+        switch (dict_source){
+            case 0:case 1://用户添加的单词、恋练有词
+                return (T)wordDao.getOtherWordByWid(wid);
+            case 2://柯林斯词典
+                return (T)wordDao.getKelinsiWordByWid(wid);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> List<T> getSentences(Class<T> type, int wid, int dict_source) {
+        List<T> res = new ArrayList<>();
+        switch (dict_source){
+            case 0: case 1:
+                List<OtherSentence> list = wordDao.getOtherSentenceByWid(wid);
+                for(OtherSentence sentence:list) res.add((T)sentence);
+                break;
+            case 2:
+                List<KelinsiItem> list2 = wordDao.getKelinsiItemsByWid(wid);
+                for(KelinsiItem item:list2) res.add((T)item);
+                break;
+        }
+        return res;
+    }
+
+
 }

@@ -1,5 +1,7 @@
 package com.immortalmin.pojo;
 
+import com.immortalmin.utils.DateUtils;
+
 public class User {
     private int uid;
     private String open_id;
@@ -11,6 +13,7 @@ public class User {
     private String email;
     private String motto;
     private long last_login;
+    private String last_login_string;
 
     public User() {
     }
@@ -98,6 +101,20 @@ public class User {
 
     public void setMotto(String motto) {
         this.motto = motto;
+    }
+
+    public String getLast_login_string() {
+        String res=null;
+        try {
+            res = DateUtils.stampToTime(String.valueOf(last_login));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public void setLast_login_string(String last_login_string) {
+        this.last_login_string = last_login_string;
     }
 
     public long getLast_login() {

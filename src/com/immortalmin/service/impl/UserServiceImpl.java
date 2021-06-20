@@ -6,6 +6,8 @@ import com.immortalmin.pojo.User;
 import com.immortalmin.service.UserService;
 import com.immortalmin.utils.MD5Utils;
 
+import java.util.List;
+
 public class UserServiceImpl implements UserService {
 
     private UserDao userDao = new UserDaoImpl();
@@ -25,5 +27,10 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<User> getUserList(int curPage,int pageSize) {
+        return userDao.getAllUser(curPage, pageSize);
     }
 }

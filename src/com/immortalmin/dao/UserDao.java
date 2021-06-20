@@ -2,8 +2,9 @@ package com.immortalmin.dao;
 
 import com.immortalmin.pojo.User;
 
-public interface UserDao {
+import java.util.List;
 
+public interface UserDao {
 
     /**
      * 查询用户是否已存在
@@ -29,5 +30,10 @@ public interface UserDao {
      */
     int saveUser(User user);
 
+    List<User> getAllUser(int curPage,int pageSize);
+
+    int getTotalCount();
+
+    void updatePwd(int uid,String newPwd);
 
 }

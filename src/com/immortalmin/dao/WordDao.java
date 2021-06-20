@@ -16,6 +16,11 @@ public interface WordDao {
     List<OtherWord> getOtherWordList(int curPage, int pageSize);
 
     /**
+     * 获取恋练有词单词列表
+     */
+    List<OtherWord> getLianlianWordList(int curPage, int pageSize);
+
+    /**
      * 获取柯林斯单词列表
      */
     List<KelinsiWord> getKelinsiWordList(int curPage, int pageSize);
@@ -46,7 +51,7 @@ public interface WordDao {
     /**
      * 删除单词
      */
-    void deleteWordByWid(int wid);
+    void deleteWordByWid(int wid,int dict_source);
 
     /**
      * 新增单词

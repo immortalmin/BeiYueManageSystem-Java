@@ -3,6 +3,8 @@ package com.immortalmin.web;
 import com.immortalmin.dao.WordDao;
 import com.immortalmin.dao.impl.WordDaoImpl;
 import com.immortalmin.pojo.User;
+import com.immortalmin.pojo.word.KelinsiItem;
+import com.immortalmin.pojo.word.KelinsiWord;
 import com.immortalmin.pojo.word.OtherSentence;
 import com.immortalmin.pojo.word.OtherWord;
 import com.immortalmin.service.WordService;
@@ -32,29 +34,77 @@ public class WordServlet extends BaseServlet {
     }
 
     //FIXME:现在只是获取“用户添加的单词”的相关信息，无法获取其他词典的单词数据。之后可以添加dict_source参数来获取不同词典的数据
-    protected void listAllOtherWord(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String curPage = request.getParameter("curPage");
-        String pageSize = request.getParameter("pageSize");
-        List<OtherWord> wordList = wordDao.getOtherWordList(Integer.parseInt(curPage), Integer.parseInt(pageSize));
-        request.setAttribute("wordList", wordList);
-        request.setAttribute("totalCount", wordDao.getTotalCount(0));
-        request.setAttribute("curPage", curPage);
-        request.setAttribute("pageSize", pageSize);
-        request.getRequestDispatcher("pages/word/OtherWord.jsp").forward(request, response);
+//    protected void listAllOtherWord(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        String curPage = request.getParameter("curPage");
+//        String pageSize = request.getParameter("pageSize");
+//        List<OtherWord> wordList = wordDao.getOtherWordList(Integer.parseInt(curPage), Integer.parseInt(pageSize));
+//        request.setAttribute("wordList", wordList);
+//        request.setAttribute("totalCount", wordDao.getTotalCount(0));
+//        request.setAttribute("curPage", curPage);
+//        request.setAttribute("pageSize", pageSize);
+//        request.getRequestDispatcher("pages/word/OtherWord.jsp").forward(request, response);
+//    }
+
+    protected void listAllWords(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int curPage = Integer.parseInt(request.getParameter("curPage"));
+        int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        int dict_source = Integer.parseInt(request.getParameter("dict_source"));
+        switch (dict_source){
+            case 0: case 1:
+                request.setAttribute("wordList",wordService.getWordList(OtherWord.class,curPage,pageSize,dict_source));
+                request.setAttribute("totalCount", wordDao.getTotalCount(dict_source));
+                request.setAttribute("curPage", curPage);
+                request.setAttribute("pageSize", pageSize);
+                request.setAttribute("dict_source", dict_source);
+                request.getRequestDispatcher("pages/word/OtherWord.jsp").forward(request, response);
+                break;
+            case 2:
+                request.setAttribute("wordList",wordService.getWordList(KelinsiWord.class,curPage,pageSize,dict_source));
+                request.setAttribute("totalCount", wordDao.getTotalCount(dict_source));
+                request.setAttribute("curPage", curPage);
+                request.setAttribute("pageSize", pageSize);
+                request.setAttribute("dict_source", dict_source);
+                request.getRequestDispatcher("pages/word/KelinsiWord.jsp").forward(request, response);
+                break;
+        }
+
     }
 
-    protected void listOtherWordDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String wid = request.getParameter("wid");
-        OtherWord otherWord = wordDao.getOtherWordByWid(Integer.parseInt(wid));
-        request.setAttribute("otherWord", otherWord);
-        List<OtherSentence> otherSentence = wordDao.getOtherSentenceByWid(Integer.parseInt(wid));
-        request.setAttribute("otherSentences", otherSentence);
-        request.getRequestDispatcher("pages/word/WordDetail.jsp").forward(request, response);
+//    protected void listOtherWordDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        String wid = request.getParameter("wid");
+//        OtherWord otherWord = wordDao.getOtherWordByWid(Integer.parseInt(wid));
+//        request.setAttribute("otherWord", otherWord);
+//        List<OtherSentence> otherSentence = wordDao.getOtherSentenceByWid(Integer.parseInt(wid));
+//        request.setAttribute("otherSentences", otherSentence);
+//        request.getRequestDispatcher("pages/word/OtherWordDetail.jsp").forward(request, response);
+//    }
+
+    protected void listWordDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int wid = Integer.parseInt(request.getParameter("wid"));
+        int dict_source =  Integer.parseInt(request.getParameter("dict_source"));
+        request.setAttribute("dict_source",dict_source);
+        switch (dict_source){
+            case 0: case 1:
+                request.setAttribute("word", wordService.getWordDetail(OtherWord.class,wid,dict_source));
+                request.setAttribute("sentences", wordService.getSentences(OtherSentence.class,wid,dict_source));
+                request.getRequestDispatcher("pages/word/OtherWordDetail.jsp").forward(request, response);
+                break;
+            case 2:
+                request.setAttribute("word", wordService.getWordDetail(KelinsiWord.class,wid,dict_source));
+                request.setAttribute("items",wordService.getSentences(KelinsiItem.class,wid,dict_source));
+                request.getRequestDispatcher("pages/word/KelinsiWordDetail.jsp").forward(request, response);
+                break;
+        }
+//        List<OtherSentence> otherSentence = wordDao.getOtherSentenceByWid(wid);
+//        request.setAttribute("otherSentences", otherSentence);
+//        request.getRequestDispatcher("pages/word/OtherWordDetail.jsp").forward(request, response);
     }
+
 
     protected void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String wid = request.getParameter("wid");
-        wordDao.deleteWordByWid(Integer.valueOf(wid));
+        int wid = Integer.parseInt(request.getParameter("wid"));
+        int dict_source = Integer.parseInt(request.getParameter("dict_source"));
+        wordDao.deleteWordByWid(wid,dict_source);
     }
     
     protected void importWords(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
