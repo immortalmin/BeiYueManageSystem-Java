@@ -6,8 +6,14 @@ import java.util.List;
 
 public interface WordDao {
 
+    /**
+     * 查询恋练有词和由用户添加的单词
+     */
     OtherWord getOtherWordByWid(int wid);
 
+    /**
+     * 查询柯林斯词典中的单词
+     */
     KelinsiWord getKelinsiWordByWid(int wid);
 
     /**
@@ -37,8 +43,6 @@ public interface WordDao {
 
     /**
      * 柯林斯词典    根据wid获取单词的所有item
-     * @param wid
-     * @return
      */
     List<KelinsiItem> getKelinsiItemsByWid(int wid);
 
@@ -55,7 +59,6 @@ public interface WordDao {
 
     /**
      * 新增单词
-     * @param otherWord
      */
     int insertWord(OtherWord otherWord);
 

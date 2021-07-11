@@ -8,16 +8,11 @@ public interface FeedbackDao {
 
     /**
      * 通过Fid来查询用户反馈
-     * @param fid
-     * @return
      */
     Feedback queryFeedbackByFid(int fid,int what);
 
     /**
      * 查询所有的用户反馈
-     * @param curPage 当前页码
-     * @param pageSize 每页数据的条数
-     * @return
      */
     List<Feedback> queryAllFeedback(int curPage,int pageSize);
 

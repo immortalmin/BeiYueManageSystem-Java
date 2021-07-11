@@ -19,15 +19,12 @@ public class LoginServlet extends BaseServlet {
 
     protected void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-//        response.setContentType("text/html;charset=utf-8");
         User user = new User();
         user.setUsername(request.getParameter("username"));
-//        user.setUsername(new String(request.getParameter("username").getBytes("UTF-8"),"UTF-8"));//解决中文乱码
         user.setPwd(request.getParameter("pwd"));
         User userLogin = userService.login(user);
         if(userLogin!=null){
             request.getSession().setAttribute("user",userLogin);
-//            request.setAttribute("user",userLogin);
             response.sendRedirect("pages/main.jsp");
         }else {
             request.setAttribute("user", user);

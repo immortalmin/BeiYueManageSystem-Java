@@ -12,7 +12,7 @@ public class WordDaoImpl extends BaseDao implements WordDao {
 
     @Override
     public OtherWord getOtherWordByWid(int wid) {
-        String sql = "SELECT wid,word_group AS \"word_en\",C_meaning AS \"word_ch\",SOURCE FROM words WHERE wid=?;";
+        String sql = "SELECT wid,word_group AS \"word_en\",C_meaning AS \"word_ch\",source FROM words WHERE wid=?;";
         return queryForOne(OtherWord.class,sql,wid);
     }
 
@@ -43,7 +43,7 @@ public class WordDaoImpl extends BaseDao implements WordDao {
 
     @Override
     public List<OtherSentence> getOtherSentenceByWid(int wid) {
-        String sql = "SELECT eid,wid,kid,word_meaning,SOURCE,E_sentence AS \"sentence_en\",C_translate AS \"sentence_ch\" FROM EXAMPLE WHERE wid=?;";
+        String sql = "SELECT eid,wid,kid,word_meaning,source,E_sentence AS \"sentence_en\",C_translate AS \"sentence_ch\" FROM example WHERE wid=?;";
         return queryForList(OtherSentence.class,sql,wid);
     }
 
